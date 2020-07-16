@@ -47,10 +47,10 @@ public class MRContainer extends UntypedAbstractActor {
                 originalSender.tell(responseGet, getSelf());
                 break;
             case "map/reduce":
-                String value = (String) msgArr[2];
-                ActorRef originalSender = (ActorRef) msgArr[3];
-                Object[] responseGet = {"get/result", key, value};
-                originalSender.tell(responseGet, getSelf());
+////                String value = (String) msgArr[2];
+////                ActorRef originalSender = (ActorRef) msgArr[3];
+////                Object[] responseGet = {"get/result", key, value};
+//                originalSender.tell(responseGet, getSelf());
                 break;
         }
 
