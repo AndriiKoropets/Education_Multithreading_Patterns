@@ -10,7 +10,13 @@ public class App04 {
         newThread.start();
 
         newThread.join();//потік main блокується допоки інший потік не виконається
-
+//        while (newThread.isAlive());//програма гарантовано завершиться також
         while (run);
+        System.out.println(Runtime.getRuntime().availableProcessors());//визначає, кількість ядер hiperthreading intel
     }
 }
+
+//join and isAlive дають hb ребро назад
+
+//написати програму, яка визначить чи SMP чи NUMA архітектура
+//написати програму, яка визначає кількість ядер
