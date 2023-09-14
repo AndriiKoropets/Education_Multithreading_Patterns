@@ -1,5 +1,6 @@
 package education.multithreading.fork_join;
 
+import java.util.Comparator;
 import java.util.Spliterator;
 import java.util.function.LongConsumer;
 import java.util.stream.StreamSupport;
@@ -47,11 +48,34 @@ class LongRange implements Spliterator.OfLong {
 
     @Override
     public int characteristics() {
-        return 0;
+        return 0
+//                | Spliterator.CONCURRENT
+                | Spliterator.DISTINCT
+                | Spliterator.IMMUTABLE
+                | Spliterator.NONNULL
+//                | Spliterator.ORDERED
+                | Spliterator.SIZED
+                | Spliterator.SORTED
+                | Spliterator.SUBSIZED;
     }
 
     @Override
-    public boolean tryAdvance(LongConsumer action) {
-        return false;
+    public boolean tryAdvance(LongConsumer consumer) {
+        if (to > from) { // [10, 20) -> [11, 20)
+            consumer.accept(from++);
+            return true;
+        } else { // [20, 20) -> [20, 20), false
+            return false;
+        }
+    }
+
+    /**
+    * If this Spliterator's source is SORTED by a Comparator,
+    * returns that Comparator.
+    * If the source is SORTED in natural order, returns null.
+    * Otherwise, if the source is not SORTED, throws IllegalStateException.
+    */
+    public Comparator<? super Long> getComparator() {
+        return null;
     }
 }
