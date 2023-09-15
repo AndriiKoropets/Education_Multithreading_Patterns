@@ -1,64 +1,124 @@
 package education.multithreading.leetcode;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.IntConsumer;
 
 class ZeroEvenOdd {
     private int n;
-
-    final Object monitor = new Object();
-    private volatile boolean zeroLock = true;
-    private volatile boolean evenLock = false;
+    Lock lock = new ReentrantLock();
+    Condition odd = lock.newCondition();
+    Condition zero = lock.newCondition();
+    AtomicInteger counter = new AtomicInteger(1);
+    boolean evenFlag = false;
+    boolean zeroFlag = false;
 
     public ZeroEvenOdd(int n) {
         this.n = n;
     }
 
     // printNumber.accept(x) outputs "x", where x is an integer.
-    public void zero(IntConsumer printNumber) {
-        for (int i = 0; i < n; i++) {
-            while (!zeroLock);
-            synchronized (monitor) {
-                printNumber.accept(0);
-            }
-            zeroLock = false;
-        }
-    }
-
-    public void even(IntConsumer printNumber) {
-        for (int i = 0; i < n; i++) {
-            while (zeroLock || !evenLock);
-            int validate = i + 1;
-            if (validate % 2 == 0) {
-                synchronized (monitor) {
-                    printNumber.accept(validate);
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        lock.lock();
+        try {
+            while (counter.get() <= n) {
+                while (zeroFlag) {
+                    zero.await();
                 }
-            }
-            zeroLock = true;
-            evenLock = false;
-        }
-    }
-
-    public void odd(IntConsumer printNumber) {
-        for (int i = 0; i < n; i++) {
-            while (zeroLock || evenLock);
-            int validate = i + 1;
-            if (validate % 2 == 1) {
-                synchronized (monitor) {
-                    printNumber.accept(validate);
+                if (counter.get() <= n) {
+                    printNumber.accept(0);
                 }
+                zeroFlag = true;
+                zero.signalAll();
             }
-            zeroLock = true;
-            evenLock = true;
+        } finally {
+            lock.unlock();
+        }
+
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        lock.lock();
+        try {
+            while (counter.get() <= n) {
+                while (!zeroFlag) {
+                    zero.await();
+                }
+                while (!evenFlag) {
+                    odd.await();
+                }
+                if (counter.get() % 2 == 0 && counter.get() <= n) {
+                    printNumber.accept(counter.getAndIncrement());
+                }
+                zeroFlag = false;
+                zero.signal();
+                evenFlag = false;
+                odd.signal();
+            }
+        } finally {
+            lock.unlock();
         }
     }
 
-    public static void main(String[] args) {
-        ZeroEvenOdd object = new ZeroEvenOdd(5);
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        lock.lock();
+        try {
+            while (counter.get() <= n) {
+                while (!zeroFlag) {
+                    zero.await();
+                }
+                while (evenFlag) {
+                    odd.await();
+                }
+                if (counter.get() % 2 == 1 && counter.get() <= n) {
+                    printNumber.accept(counter.getAndIncrement());
+                }
+                zeroFlag = false;
+                zero.signal();
+                evenFlag = true;
+                odd.signal();
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
 
-        IntConsumer task = System.out::println;
+    public static void main(String[] args) throws InterruptedException {
+        ZeroEvenOdd obj = new ZeroEvenOdd(100);
+        IntConsumer task = System.out::print;
+        Runnable task1 = () -> {
+            try {
+                obj.zero(task);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
 
-        new Thread(() -> object.zero(task)).start();
-        new Thread(() -> object.even(task)).start();
-        new Thread(() -> object.odd(task)).start();
+        Runnable task2 = () -> {
+            try {
+                obj.even(task);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        Runnable task3 = () -> {
+            try {
+                obj.odd(task);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        executorService.submit(task1);
+        executorService.submit(task2);
+        executorService.submit(task3);
+
+        executorService.shutdown();
     }
 }
