@@ -1,10 +1,11 @@
 package education.multithreading.csp_jcsp;
 
-import org.jcsp.lan.CSTimer;
-import org.jcsp.lan.ChannelOutputInt;
+import org.jcsp.lang.CSTimer;
+import org.jcsp.lang.ChannelOutputInt;
+import org.jcsp.lang.CSProcess;
 
 
-public class Producer implements CSprocess{
+public class Producer implements CSProcess{
     private final ChannelOutputInt out;
     private int k;
 

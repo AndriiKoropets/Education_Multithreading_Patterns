@@ -1,14 +1,17 @@
 package education.multithreading.transaction_memory.treiber_stack;
 
+import org.multiverse.api.StmUtils;
+import org.multiverse.api.references.TxnRef;
+
 public class MyTxStack<E> {
-    private final TxnRef<Node<E>>  top = StmUtils.newTxnRef(null);
+    private final TxnRef<Node<E>> top = StmUtils.newTxnRef(null);
 
     public void push(E elem) {
         top.set(new Node<>(top.get(), elem));
     }
 
     public E pop() {
-        E elem = top.get().value();
+        E elem = top.get().value;
         top.set(top.get().next);
         return elem;
     }

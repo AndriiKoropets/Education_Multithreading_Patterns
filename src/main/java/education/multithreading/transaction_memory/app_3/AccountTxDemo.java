@@ -1,6 +1,7 @@
 package education.multithreading.transaction_memory.app_3;
 
-import com.boeing.tape.document.reference.persistence.repository.transaction_memory.app_2.AccountTx;
+import education.multithreading.transaction_memory.app_2.AccountTx;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 

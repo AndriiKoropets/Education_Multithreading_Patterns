@@ -2,8 +2,6 @@ package education.multithreading.concurrent.task_executors;
 
 import java.util.concurrent.Executor;
 
-import static com.sun.javafx.runtime.async.BackgroundExecutor.getExecutor;
-
 public class Demo01 {
 
     public static void main(String[] args) {

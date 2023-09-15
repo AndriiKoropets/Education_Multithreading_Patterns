@@ -4,7 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class AppJUC {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         final BlockingQueue<String> q0 = new ArrayBlockingQueue<>(64);
         final BlockingQueue<String> q1 = new ArrayBlockingQueue<>(64);
 

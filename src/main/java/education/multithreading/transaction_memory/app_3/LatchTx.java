@@ -1,5 +1,13 @@
 package education.multithreading.transaction_memory.app_3;
 
+import org.multiverse.api.StmUtils;
+import org.multiverse.api.Txn;
+import org.multiverse.api.callables.TxnBooleanCallable;
+import org.multiverse.api.references.TxnBoolean;
+
+import static org.multiverse.api.StmUtils.atomic;
+import static org.multiverse.api.StmUtils.retry;
+
 public class LatchTx {
     private TxnBoolean open = StmUtils.newTxnBoolean(false);
 

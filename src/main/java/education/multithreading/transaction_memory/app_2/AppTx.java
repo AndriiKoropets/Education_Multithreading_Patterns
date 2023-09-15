@@ -1,10 +1,16 @@
 package education.multithreading.transaction_memory.app_2;
 
-import com.boeing.tape.document.reference.persistence.repository.transaction_memory.app_1.AccountLock;
+import org.multiverse.api.Txn;
+import org.multiverse.api.callables.TxnCallable;
+import org.multiverse.api.callables.TxnIntCallable;
+import org.multiverse.api.exceptions.DeadTxnException;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static org.multiverse.api.StmUtils.atomic;
 
 public class AppTx {
 
@@ -40,7 +46,7 @@ public class AppTx {
         System.out.println(toStr(accounts));
     }
 
-    public static boolean transfer(final AccountLock from, final AccountLock to, final int amount) {
+    public static boolean transfer(final AccountTx from, final AccountTx to, final int amount) {
 
         try {
             atomic(new Runnable() {
@@ -56,7 +62,7 @@ public class AppTx {
         }
     }
 
-    public static int sum(final AccountLock[] accounts) throws Exception {
+    public static int sum(final AccountTx[] accounts) throws Exception {
         return atomic(new TxnIntCallable() {
             public int call(Txn txn) throws Exception {
                 int result = 0;
@@ -68,7 +74,7 @@ public class AppTx {
         });
     }
 
-    public static String toStr(final AccountLock[] accounts) throws Exception {
+    public static String toStr(final AccountTx[] accounts) throws Exception {
         return atomic(new TxnCallable<String>() {
             public String call(Txn txn) throws Exception {
                 return Arrays.toString(accounts);

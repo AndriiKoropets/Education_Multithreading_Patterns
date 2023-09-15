@@ -1,11 +1,12 @@
 package education.multithreading.transaction_memory.app_2;
 
 import org.multiverse.api.StmUtils;
+import org.multiverse.api.references.TxnInteger;
 
 import static org.multiverse.api.StmUtils.abort;
 
 public class AccountTx {
-    private final TnxInteger balance;
+    private final TxnInteger balance;
 
     public AccountTx(int balance) {
         this.balance = StmUtils.newTxnInteger(balance);

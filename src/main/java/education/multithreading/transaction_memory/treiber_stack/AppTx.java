@@ -1,10 +1,16 @@
 package education.multithreading.transaction_memory.treiber_stack;
 
 
+import org.multiverse.api.StmUtils;
+import org.multiverse.api.collections.TxnStack;
+
+import static org.multiverse.api.StmUtils.atomic;
+import static org.multiverse.api.StmUtils.retry;
+
 public class AppTx {
     public static void main(String[] args) {
-        final TxnStack<String> stack0 = StmUtils.nexTxnStack();
-        final TxnStack<String> stack1 = StmUtils.nexTxnStack();
+        final TxnStack<String> stack0 = StmUtils.newTxnStack();
+        final TxnStack<String> stack1 = StmUtils.newTxnStack();
 
         new Thread(new Runnable() {
             @Override

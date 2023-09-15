@@ -1,5 +1,8 @@
 package education.multithreading.transaction_memory.treiber_stack;
 
+import static org.multiverse.api.StmUtils.atomic;
+import static org.multiverse.api.StmUtils.retry;
+
 public class App {
     public static void main(String[] args) {
         final MyTxStack<String> stack0 = new MyTxStack();

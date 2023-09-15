@@ -1,6 +1,5 @@
 package education.multithreading.concurrent.monad;
 
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
